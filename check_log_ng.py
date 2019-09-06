@@ -179,6 +179,7 @@ class LogChecker(object):
         self.found_messages = []
         self.critical_found = []
         self.critical_found_messages = []
+        self.log_exist = False
 
     def _check_updated(self, logfile, offset, filesize):
         """Check whether the log file is updated.
@@ -359,7 +360,10 @@ class LogChecker(object):
 
     def _update_message(self):
         state_string = 'OK'
-        message = 'OK - No matches found.'
+        if self.log_exist:
+            message = 'OK - No matches found.'
+        else:
+            message = 'OK - Logfile is not found.'
         if self.state == LogChecker.STATE_WARNING:
             state_string = 'WARNING'
         elif self.state == LogChecker.STATE_CRITICAL:
@@ -614,6 +618,7 @@ class LogChecker(object):
         logfile = LogChecker.to_unicode(logfile)
         if not os.path.exists(logfile):
             return
+        self.log_exist = True
 
         filesize = os.path.getsize(logfile)
         # define seek positions.
@@ -686,6 +691,7 @@ class LogChecker(object):
         for logfile in logfile_list:
             if not os.path.isfile(logfile):
                 continue
+            self.log_exist = True
             seekfile = self._create_seek_filename(
                 logfile_pattern, logfile,
                 trace_inode=self.config['trace_inode'], tag=tag)
