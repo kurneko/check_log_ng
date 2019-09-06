@@ -36,6 +36,7 @@ class LogCheckerTestCase(unittest.TestCase):
     MESSAGE_CRITICAL_ONE_WITH_HEADER = "CRITICAL: Critical Found 1 lines (HEADER): {0} at {1}"
     MESSAGE_UNKNOWN_LOCK_TIMEOUT = (
         "UNKNOWN: Lock timeout. Another process is running.")
+    MESSAGE_UNKNOWN_LOG_NOT_FOUND = "UNKNOWN: Logfile is not found."
 
     # Class variablesex
     BASEDIR = None
@@ -579,6 +580,36 @@ class LogCheckerTestCase(unittest.TestCase):
             log.get_message(),
             self.MESSAGE_WARNING_TWO_IN_TWO_FILES.format(
                 line1, self.logfile1, line2, self.logfile2))
+
+    def test_logfile_NOT_FOUND(self):
+        """--logfile option
+        """
+        self.config["pattern_list"] = ["ERROR"]
+        log = LogChecker(self.config)
+        # --logfile option with NOTEXISTFILE
+        logfile_pattern = "NOTEXISTFILE"
+        log.clear_state()
+        log.check(logfile_pattern)
+        self.assertEqual(log.get_state(), LogChecker.STATE_UNKNOWN)
+        self.assertEqual(log.get_message(), self.MESSAGE_UNKNOWN_LOG_NOT_FOUND)
+
+        log = LogChecker(self.config)
+        # --logfile option with multiple filenames(NOTEXISTFILE, NOTEXISTFILE)
+        logfile_pattern = "{0} {1}".format("NOTEXISTFILE1", "NOTEXISTFILE2")
+        log.clear_state()
+        log.check(logfile_pattern)
+        self.assertEqual(log.get_state(), LogChecker.STATE_UNKNOWN)
+        self.assertEqual(log.get_message(), self.MESSAGE_UNKNOWN_LOG_NOT_FOUND)
+
+        # --logfile option with multiple filenames(NOTEXISTFILE, EXISTFILE)
+        log = LogChecker(self.config)
+        line = self._make_line(self._get_timestamp(), "test", "OK")
+        self._write_logfile(self.logfile, line)
+        logfile_pattern = "{0} {1}".format("NOTEXISTFILE1", self.logfile)
+        log.clear_state()
+        log.check(logfile_pattern)
+        self.assertEqual(log.get_state(), LogChecker.STATE_OK)
+        self.assertEqual(log.get_message(), self.MESSAGE_OK)
 
     def test_trace_inode(self):
         """--trace_inode
