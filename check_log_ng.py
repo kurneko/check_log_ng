@@ -20,7 +20,6 @@ Features are as follows:
 This module is available in Python 2.6, 2.7, 3.5, 3.6.
 Require argparse module in python 2.6.
 """
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -147,6 +146,7 @@ class LogChecker(object):
         self.config['lock_timeout'] = 3
         self.config['output_header'] = False
         self.config['output_quiet'] = False
+        self.config['error_no_exist'] = False
 
         # overwrite values with user's values
         for key in self.config:
@@ -613,8 +613,10 @@ class LogChecker(object):
         _debug("logfile='{0}', seekfile='{1}'".format(logfile, seekfile))
         logfile = LogChecker.to_unicode(logfile)
         if not os.path.exists(logfile):
-            self.message = "UNKNOWN: Logfile is not found."
-            self.state = LogChecker.STATE_UNKNOWN
+            # if set error_no_exist, return UNKNOWN.
+            if self.config['error_no_exist']:
+                self.message = "UNKNOWN: Logfile is not found."
+                self.state = LogChecker.STATE_UNKNOWN
             return
 
         filesize = os.path.getsize(logfile)
@@ -700,7 +702,9 @@ class LogChecker(object):
                 self._remove_old_seekfile_with_inode(logfile_pattern, tag)
             else:
                 self._remove_old_seekfile(logfile_pattern, tag)
-        if log_exist == False:
+
+        # if set error_no_exist, return UNKNOWN.
+        if self.config['error_no_exist'] and log_exist == False:
             self.message = "UNKNOWN: Logfile is not found."
             self.state = LogChecker.STATE_UNKNOWN
         return
@@ -1279,6 +1283,13 @@ def _make_parser():
         default=False,
         help=("QUIET mode: Suppress the output of matched lines.")
     )
+    parser.add_argument(
+        "--error-no-exist",
+        action="store_true",
+        dest="error_no_exist",
+        default=False,
+        help=("If file not exist, return UNKNOWN error.")
+    )
     return parser
 
 
@@ -1379,7 +1390,8 @@ def _generate_config(args):
         "cachetime": args.cachetime,
         "lock_timeout": args.lock_timeout,
         "output_header": args.output_header,
-        "output_quiet": args.output_quiet
+        "output_quiet": args.output_quiet,
+        "error_no_exist": args.error_no_exist
     }
     return config
 

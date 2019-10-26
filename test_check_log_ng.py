@@ -99,7 +99,8 @@ class LogCheckerTestCase(unittest.TestCase):
             "scantime": 86400,
             "expiration": 691200,
             "cachetime": 0,
-            "lock_timeout": 3
+            "lock_timeout": 3,
+            "error_no_exist": False
         }
 
     def tearDown(self):
@@ -582,9 +583,29 @@ class LogCheckerTestCase(unittest.TestCase):
                 line1, self.logfile1, line2, self.logfile2))
 
     def test_logfile_NOT_FOUND(self):
-        """--logfile option
+        """--error-no-exist option
         """
+
+        # normal(Do not use error-no-exist option)
         self.config["pattern_list"] = ["ERROR"]
+        log = LogChecker(self.config)
+        # --logfile option with NOTEXISTFILE
+        logfile_pattern = "NOTEXISTFILE"
+        log.clear_state()
+        log.check(logfile_pattern)
+        self.assertEqual(log.get_state(), LogChecker.STATE_OK)
+        self.assertEqual(log.get_message(), self.MESSAGE_OK)
+
+        log = LogChecker(self.config)
+        # --logfile option with multiple filenames(NOTEXISTFILE, NOTEXISTFILE)
+        logfile_pattern = "{0} {1}".format("NOTEXISTFILE1", "NOTEXISTFILE2")
+        log.clear_state()
+        log.check(logfile_pattern)
+        self.assertEqual(log.get_state(), LogChecker.STATE_OK)
+        self.assertEqual(log.get_message(), self.MESSAGE_OK)
+
+        # use error-no-exist option
+        self.config["error_no_exist"] = ["True"]
         log = LogChecker(self.config)
         # --logfile option with NOTEXISTFILE
         logfile_pattern = "NOTEXISTFILE"
