@@ -615,7 +615,7 @@ class LogChecker(object):
         if not os.path.exists(logfile):
             # if set error_no_exist, return UNKNOWN.
             if self.config['error_no_exist']:
-                self.message = "UNKNOWN: Logfile is not found."
+                self.message = "UNKNOWN: {0} is not found.".format(logfile)
                 self.state = LogChecker.STATE_UNKNOWN
             return
 
@@ -705,7 +705,7 @@ class LogChecker(object):
 
         # if set error_no_exist, return UNKNOWN.
         if self.config['error_no_exist'] and log_exist == False:
-            self.message = "UNKNOWN: Logfile is not found."
+            self.message = "UNKNOWN: {0} is not found.".format(logfile_pattern)
             self.state = LogChecker.STATE_UNKNOWN
         return
 
