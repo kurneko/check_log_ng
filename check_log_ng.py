@@ -146,7 +146,7 @@ class LogChecker(object):
         self.config['lock_timeout'] = 3
         self.config['output_header'] = False
         self.config['output_quiet'] = False
-        self.config['error_no_exist'] = False
+        self.config['error_logfile_not_exist'] = False
 
         # overwrite values with user's values
         for key in self.config:
@@ -613,8 +613,8 @@ class LogChecker(object):
         _debug("logfile='{0}', seekfile='{1}'".format(logfile, seekfile))
         logfile = LogChecker.to_unicode(logfile)
         if not os.path.exists(logfile):
-            # if set error_no_exist, return UNKNOWN.
-            if self.config['error_no_exist']:
+            # if set error_logfile_not_exist, return UNKNOWN.
+            if self.config['error_logfile_not_exist']:
                 self.message = "UNKNOWN: {0} is not found.".format(logfile)
                 self.state = LogChecker.STATE_UNKNOWN
             return
@@ -701,8 +701,8 @@ class LogChecker(object):
             else:
                 self._remove_old_seekfile(logfile_pattern, tag)
 
-        # if set error_no_exist, return UNKNOWN.
-        if self.config['error_no_exist'] and len(logfile_list) == 0:
+        # if set error_logfile_not_exist, return UNKNOWN.
+        if self.config['error_logfile_not_exist'] and len(logfile_list) == 0:
             self.message = "UNKNOWN: {0} is not found.".format(logfile_pattern)
             self.state = LogChecker.STATE_UNKNOWN
         return
@@ -1282,11 +1282,11 @@ def _make_parser():
         help=("QUIET mode: Suppress the output of matched lines.")
     )
     parser.add_argument(
-        "--error-no-exist",
+        "--error-logfile-not-exist",
         action="store_true",
-        dest="error_no_exist",
+        dest="error_logfile_not_exist",
         default=False,
-        help=("If file not exist, return UNKNOWN error.")
+        help=("Return UNKNOWN if the log file does not exist.")
     )
     return parser
 
@@ -1389,7 +1389,7 @@ def _generate_config(args):
         "lock_timeout": args.lock_timeout,
         "output_header": args.output_header,
         "output_quiet": args.output_quiet,
-        "error_no_exist": args.error_no_exist
+        "error_logfile_not_exist": args.error_logfile_not_exist
     }
     return config
 

@@ -100,7 +100,7 @@ class LogCheckerTestCase(unittest.TestCase):
             "expiration": 691200,
             "cachetime": 0,
             "lock_timeout": 3,
-            "error_no_exist": False
+            "error_logfile_not_exist": False
         }
 
     def tearDown(self):
@@ -605,7 +605,7 @@ class LogCheckerTestCase(unittest.TestCase):
         self.assertEqual(log.get_message(), self.MESSAGE_OK)
 
         # use error-no-exist option
-        self.config["error_no_exist"] = ["True"]
+        self.config["error_logfile_not_exist"] = ["True"]
         log = LogChecker(self.config)
         # --logfile option with NOTEXISTFILE
         logfile_pattern = "NOTEXISTFILE"
