@@ -686,12 +686,10 @@ class LogChecker(object):
                 to prevent names collisions.
 
         """
-        log_exist = False
         logfile_list = self._get_logfile_list(logfile_pattern)
         for logfile in logfile_list:
             if not os.path.isfile(logfile):
                 continue
-            log_exist = True
             seekfile = self._create_seek_filename(
                 logfile_pattern, logfile,
                 trace_inode=self.config['trace_inode'], tag=tag)
@@ -704,7 +702,7 @@ class LogChecker(object):
                 self._remove_old_seekfile(logfile_pattern, tag)
 
         # if set error_no_exist, return UNKNOWN.
-        if self.config['error_no_exist'] and log_exist == False:
+        if self.config['error_no_exist'] and len(logfile_list) == 0:
             self.message = "UNKNOWN: {0} is not found.".format(logfile_pattern)
             self.state = LogChecker.STATE_UNKNOWN
         return
