@@ -36,7 +36,7 @@ class LogCheckerTestCase(unittest.TestCase):
     MESSAGE_CRITICAL_ONE_WITH_HEADER = "CRITICAL: Critical Found 1 lines (HEADER): {0} at {1}"
     MESSAGE_UNKNOWN_LOCK_TIMEOUT = (
         "UNKNOWN: Lock timeout. Another process is running.")
-    MESSAGE_UNKNOWN_LOG_NOT_FOUND = "UNKNOWN: {0} is not found."
+    MESSAGE_UNKNOWN_LOG_NOT_EXIST = "UNKNOWN: {0} is not exist."
 
     # Class variablesex
     BASEDIR = None
@@ -612,7 +612,7 @@ class LogCheckerTestCase(unittest.TestCase):
         log.clear_state()
         log.check(logfile_pattern)
         self.assertEqual(log.get_state(), LogChecker.STATE_UNKNOWN)
-        self.assertEqual(log.get_message(), self.MESSAGE_UNKNOWN_LOG_NOT_FOUND.format(logfile_pattern))
+        self.assertEqual(log.get_message(), self.MESSAGE_UNKNOWN_LOG_NOT_EXIST.format(logfile_pattern))
 
         log = LogChecker(self.config)
         # --logfile option with multiple filenames(NOTEXISTFILE, NOTEXISTFILE)
@@ -620,7 +620,7 @@ class LogCheckerTestCase(unittest.TestCase):
         log.clear_state()
         log.check(logfile_pattern)
         self.assertEqual(log.get_state(), LogChecker.STATE_UNKNOWN)
-        self.assertEqual(log.get_message(), self.MESSAGE_UNKNOWN_LOG_NOT_FOUND.format(logfile_pattern))
+        self.assertEqual(log.get_message(), self.MESSAGE_UNKNOWN_LOG_NOT_EXIST.format(logfile_pattern))
 
         # --logfile option with multiple filenames(NOTEXISTFILE, EXISTFILE)
         log = LogChecker(self.config)
