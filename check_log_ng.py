@@ -615,7 +615,7 @@ class LogChecker(object):
         if not os.path.exists(logfile):
             # if set error_logfile_not_exist, return UNKNOWN.
             if self.config['error_logfile_not_exist']:
-                self.message = "UNKNOWN: {0} is not exist.".format(logfile)
+                self.message = "UNKNOWN: {0} does not exist.".format(logfile)
                 self.state = LogChecker.STATE_UNKNOWN
             return
 
@@ -703,7 +703,7 @@ class LogChecker(object):
 
         # if set error_logfile_not_exist, return UNKNOWN.
         if self.config['error_logfile_not_exist'] and len(logfile_list) == 0:
-            self.message = "UNKNOWN: {0} is not exist.".format(logfile_pattern)
+            self.message = "UNKNOWN: {0} does not exist.".format(logfile_pattern)
             self.state = LogChecker.STATE_UNKNOWN
         return
 

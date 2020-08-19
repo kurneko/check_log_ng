@@ -36,7 +36,7 @@ class LogCheckerTestCase(unittest.TestCase):
     MESSAGE_CRITICAL_ONE_WITH_HEADER = "CRITICAL: Critical Found 1 lines (HEADER): {0} at {1}"
     MESSAGE_UNKNOWN_LOCK_TIMEOUT = (
         "UNKNOWN: Lock timeout. Another process is running.")
-    MESSAGE_UNKNOWN_LOG_NOT_EXIST = "UNKNOWN: {0} is not exist."
+    MESSAGE_UNKNOWN_LOG_NOT_EXIST = "UNKNOWN: {0} does not exist."
 
     # Class variablesex
     BASEDIR = None
