@@ -583,10 +583,10 @@ class LogCheckerTestCase(unittest.TestCase):
                 line1, self.logfile1, line2, self.logfile2))
 
     def test_logfile_NOT_FOUND(self):
-        """--error-no-exist option
+        """--error-logfile-not-exist option
         """
 
-        # normal(Do not use error-no-exist option)
+        # normal(Do not use --error-logfile-not-exist option)
         self.config["pattern_list"] = ["ERROR"]
         log = LogChecker(self.config)
         # --logfile option with NOTEXISTFILE
@@ -604,7 +604,7 @@ class LogCheckerTestCase(unittest.TestCase):
         self.assertEqual(log.get_state(), LogChecker.STATE_OK)
         self.assertEqual(log.get_message(), self.MESSAGE_OK)
 
-        # use error-no-exist option
+        # use --error-logfile-not-exist option
         self.config["error_logfile_not_exist"] = ["True"]
         log = LogChecker(self.config)
         # --logfile option with NOTEXISTFILE
@@ -612,7 +612,8 @@ class LogCheckerTestCase(unittest.TestCase):
         log.clear_state()
         log.check(logfile_pattern)
         self.assertEqual(log.get_state(), LogChecker.STATE_UNKNOWN)
-        self.assertEqual(log.get_message(), self.MESSAGE_UNKNOWN_LOG_NOT_EXIST.format(logfile_pattern))
+        self.assertEqual(
+            log.get_message(), self.MESSAGE_UNKNOWN_LOG_NOT_EXIST.format(logfile_pattern))
 
         log = LogChecker(self.config)
         # --logfile option with multiple filenames(NOTEXISTFILE, NOTEXISTFILE)
@@ -620,7 +621,8 @@ class LogCheckerTestCase(unittest.TestCase):
         log.clear_state()
         log.check(logfile_pattern)
         self.assertEqual(log.get_state(), LogChecker.STATE_UNKNOWN)
-        self.assertEqual(log.get_message(), self.MESSAGE_UNKNOWN_LOG_NOT_EXIST.format(logfile_pattern))
+        self.assertEqual(
+            log.get_message(), self.MESSAGE_UNKNOWN_LOG_NOT_EXIST.format(logfile_pattern))
 
         # --logfile option with multiple filenames(NOTEXISTFILE, EXISTFILE)
         log = LogChecker(self.config)
